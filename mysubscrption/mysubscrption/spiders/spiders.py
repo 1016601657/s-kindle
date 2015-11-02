@@ -21,18 +21,20 @@ class Zhihu(CrawlSpider):
             for s in s_url:
                 web_url = url+s_url[0]
                 yield Request(web_url,callback=self.parse2)
+
     def parse2(self,response):
-        filename = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+'.txt'
+        # filename = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+'.txt'
         item = MysubscrptionItem()
         select = Selector(response)
-        ribao = select.xpath('//div[@class="content"]')
-        dr = re.compile(r'<[^>]+>',re.S)
-        dd = dr.sub('',ribao)
-        print(dd)
-        item['title'] = ''
-        item['content'] = ''
-        item['date'] = ''
-        item['geqian'] = ''
-        # with open(filename,'wb') as f:
-        #     f.write(response.body)
+        tt = select.xpath('//h1[@class="headline-title"]/text()').extract()
+        filename = tt[0]
+        ribao = select.xpath('//div[@class="content"]/p/text()').extract()
+        for x in ribao:
+            with open(filename,'ab') as f:
+                f.write(x.encode('utf-8'))
+        # item['title'] = ''
+        # item['content'] = ''
+        # item['date'] = ''
+        # item['geqian'] = ''
+
 
